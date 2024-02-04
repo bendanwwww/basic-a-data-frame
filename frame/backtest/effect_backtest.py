@@ -15,7 +15,7 @@ class EffectBacktest(object):
     # 简单效果回测 回测 90 天样本
     def simple_effect_backtest(self, strategy_func):
         res_table = pd.DataFrame(columns=['time_key', 'income', 'income_rate', 'winning_rate'])
-        for last_day_age in range(30, 1, -1):
+        for last_day_age in range(90, 1, -1):
             time_key = get_last_n_day(last_day_age - 1)
             income = 0.0
             unit_income = 0.0
