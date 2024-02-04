@@ -3,6 +3,8 @@ from futu import RET_OK, OpenQuoteContext
 
 
 class FuTuData(object):
+
+    # 获取数据客户端
     futu_client = OpenQuoteContext(host='127.0.0.1', port=9001)
 
     page_size = 100

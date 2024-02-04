@@ -1,11 +1,12 @@
 from futu import KLType
 
-from frame.constant.resource_constant import FUTU_DATA
 from frame.constant.trend_constant import Trend
 import tools.time_tool
+from frame.data.data_service.data_service import DataService
 
 
 class SimpleStrategy(object):
+    data_service = DataService()
 
     # 简单移动平均预测
     # 若 最近 30 个交易日 MA:10 曲线趋势向上 且 最近 3 交易日 MA:1 曲线趋势向下, 则下一个交易日预测上涨
@@ -14,7 +15,7 @@ class SimpleStrategy(object):
         # 获取当前和 120 天前日期字符串
         last_n_day = tools.time_tool.get_last_n_day(120, start_day_str=start_day)
         # 获取前 120 天股票 天级别 k 线数据
-        data = FUTU_DATA.get_history_kline(code, last_n_day, start_day, KLType.K_DAY)
+        data = self.data_service.get_history_kline_with_cache(code, last_n_day, start_day, KLType.K_DAY)
         if data is None:
             return Trend.UNKNOWN
         # 计算每日平均价

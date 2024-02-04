@@ -1,16 +1,15 @@
 from futu import KLType
 import numpy as np
-from sklearn import metrics
 
 from frame.backtest.effect_backtest import EffectBacktest
 from frame.constant.strategy_constant import Strategy
-from frame.data.data_service.get_data_utils import FuTuData
+from frame.data.data_service.data_service import DataService
 from frame.strategy.simple_strategy import SimpleStrategy
 
 
 def test1():
-    futu_data = FuTuData()
-    test_k_day_data = futu_data.get_history_kline('US.TAL', '2023-12-29', '2023-12-29', KLType.K_DAY)
+    data_service = DataService()
+    test_k_day_data = data_service.get_history_kline_with_cache('US.TAL', '2023-12-29', '2023-12-29', KLType.K_DAY)
     print(test_k_day_data)
 
 
