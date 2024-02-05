@@ -1,3 +1,5 @@
+import pandas as pd
+
 from frame.constant.resource_constant import FUTU_DATA
 from frame.data.data_service.data_cache import DataCache
 from tools.time_tool import date_format1, date_format2, get_last_n_day, get_today
@@ -20,6 +22,8 @@ class DataService(object):
         last_start = get_last_n_day(365, start)
         today_end = get_today()
         data = FUTU_DATA.get_history_kline(code, last_start, today_end, ktype)
+        if data is None:
+            return data
         # 添加时间戳列
         data['time_key_timestamp'] = data.apply(lambda d: date_format2(d['time_key']), axis=1)
         # 写入缓存

@@ -1,19 +1,23 @@
+import os
+
 import pandas as pd
 from futu import KLType
 
 from frame.constant.trend_constant import Trend
 from frame.data.data_service.data_service import DataService
+from frame.data.static_conf.read import read_csv
 from tools.time_tool import get_last_n_day
 
 
 class EffectBacktest(object):
     # 测试股票集
-    test_code_array = ['US.TAL', 'US.EDU', 'US.LI', 'US.VIPS', 'US.BILI', 'US.NIO']
+    technology_test_code = read_csv('../frame/data/static_conf/technology_code.csv')
 
     data_service = DataService()
 
     # 简单效果回测 回测 90 天样本
     def simple_effect_backtest(self, strategy_func):
+        print(os.getcwd())
         res_table = pd.DataFrame(columns=['time_key', 'income', 'income_rate', 'winning_rate'])
         for last_day_age in range(90, 1, -1):
             time_key = get_last_n_day(last_day_age - 1)
@@ -22,7 +26,9 @@ class EffectBacktest(object):
             winning = 0
             lose = 0
             all = 0
-            for code in self.test_code_array:
+            for data in self.technology_test_code:
+                # 股票代码
+                code = data['code']
                 # 根据策略判断是否买入
                 trend = strategy_func(code, get_last_n_day(last_day_age))
                 # 可以买入
