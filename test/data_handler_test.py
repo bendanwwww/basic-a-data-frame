@@ -2,7 +2,9 @@ from futu import KLType
 import numpy as np
 
 from frame.backtest.effect_backtest import EffectBacktest
+from frame.constant.code_collection_constant import CodeCollection
 from frame.constant.strategy_constant import Strategy
+from frame.data.data_choose.data_choose import DataChoose
 from frame.data.data_service.data_service import DataService
 from frame.strategy.simple_strategy import SimpleStrategy
 
@@ -25,8 +27,8 @@ def test2():
 
 def test3():
     simple_strategy = SimpleStrategy()
-    last_thirty_ma_trend, last_three_ma_trend, trend = simple_strategy.ma_simple_strategy("US.TAL")
-    print('last_thirty_ma_trend: ' + str(last_thirty_ma_trend) + ', last_three_ma_trend: ' + str(last_three_ma_trend) + ', trend: ' + trend)
+    trend = simple_strategy.ma_simple_strategy("US.TAL")
+    print('trend: ' + trend)
 
 
 def test4():
@@ -35,4 +37,10 @@ def test4():
     print(backtest_data)
 
 
-test4()
+def test5():
+    data_choose = DataChoose()
+    choose_code_list = data_choose.choose_data(Strategy.MA_SIMPLE.strategy_func, CodeCollection.US_TECHNOLOGY_CODE)
+    print(choose_code_list)
+
+
+test5()

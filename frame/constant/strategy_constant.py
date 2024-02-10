@@ -14,3 +14,5 @@ class Strategy(object):
     """
     MA_SIMPLE = StrategyEntity('ma_simple', SimpleStrategy().ma_simple_strategy)
 
+    strategy_dict = {'maSimple': MA_SIMPLE.strategy_func}
+

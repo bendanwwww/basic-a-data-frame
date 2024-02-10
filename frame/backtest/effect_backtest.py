@@ -1,23 +1,21 @@
-import os
-
 import pandas as pd
 from futu import KLType
 
+from frame.constant.code_collection_constant import CodeCollection
 from frame.constant.trend_constant import Trend
 from frame.data.data_service.data_service import DataService
-from frame.data.static_conf.read import read_csv
 from tools.time_tool import get_last_n_day
 
 
 class EffectBacktest(object):
     # 测试股票集
-    technology_test_code = read_csv('../frame/data/static_conf/technology_code.csv')
+    technology_test_code = CodeCollection.US_TECHNOLOGY_CODE.get_data()
+    # technology_test_code = [{'code': 'US.CSCO'}]
 
     data_service = DataService()
 
     # 简单效果回测 回测 90 天样本
     def simple_effect_backtest(self, strategy_func):
-        print(os.getcwd())
         res_table = pd.DataFrame(columns=['time_key', 'income', 'income_rate', 'winning_rate'])
         for last_day_age in range(90, 1, -1):
             time_key = get_last_n_day(last_day_age - 1)

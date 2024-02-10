@@ -1,5 +1,3 @@
-import pandas as pd
-
 from frame.constant.resource_constant import FUTU_DATA
 from frame.data.data_service.data_cache import DataCache
 from tools.time_tool import date_format1, date_format2, get_last_n_day, get_today

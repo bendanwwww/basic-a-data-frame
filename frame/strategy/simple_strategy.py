@@ -12,6 +12,8 @@ class SimpleStrategy(object):
     # 若 最近 30 个交易日 MA:10 曲线趋势向上 且 最近 3 交易日 MA:1 曲线趋势向下, 则下一个交易日预测上涨
     # 当 Σ(MAₙ - MA₍ₙ₋₁₎) > 0 趋势向上, Σ(MAₙ - MA₍ₙ₋₁₎) < 0 趋势向下, Σ(MAₙ - MA₍ₙ₋₁₎) = 0 趋势不变
     def ma_simple_strategy(self, code, start_day=None):
+        if start_day is None:
+            start_day = tools.time_tool.get_today()
         # 获取当前和 120 天前日期字符串
         last_n_day = tools.time_tool.get_last_n_day(120, start_day_str=start_day)
         # 获取前 120 天股票 天级别 k 线数据
