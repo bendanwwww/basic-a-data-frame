@@ -11,8 +11,9 @@ class EffectBacktest(object):
     data_service = DataService()
 
     # 简单效果回测 默认回测 90 天样本
-    def simple_effect_backtest(self, test_codes, strategy_func, test_day=None):
+    def simple_effect_backtest(self, strategy_func, code_collection, test_day=None):
         res_table = get_test_result_table()
+        test_codes = code_collection.get_data()
         if test_day is None:
             test_day = 90
         cumulative_buy_num = 0

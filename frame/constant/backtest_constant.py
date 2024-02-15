@@ -12,7 +12,7 @@ class Backtest(object):
     """
     回测类型
     """
-    SIMPLE_EFFECT = BacktestEntity('simple_effect', EffectBacktest().simple_effect_backtest)
+    SIMPLE_EFFECT = BacktestEntity('简单效果回测', EffectBacktest().simple_effect_backtest)
 
-    backtest_dict = {'simple_effect': SIMPLE_EFFECT.backtest_func}
+    backtest_dict = {'simple_effect': SIMPLE_EFFECT}
 

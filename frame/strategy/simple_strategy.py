@@ -8,7 +8,7 @@ from frame.data.data_service.data_service import DataService
 class SimpleStrategy(object):
     data_service = DataService()
 
-    # 简单移动平均预测
+    # 简单移动平均
     # 若 最近 30 个交易日 MA:10 曲线趋势向上 且 最近 3 交易日 MA:1 曲线趋势向下, 则下一个交易日预测上涨
     # 当 Σ(MAₙ - MA₍ₙ₋₁₎) > 0 趋势向上, Σ(MAₙ - MA₍ₙ₋₁₎) < 0 趋势向下, Σ(MAₙ - MA₍ₙ₋₁₎) = 0 趋势不变
     def ma_simple_strategy(self, code, start_day=None):

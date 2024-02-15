@@ -12,7 +12,7 @@ class Strategy(object):
     """
     策略类型
     """
-    MA_SIMPLE = StrategyEntity('ma_simple', SimpleStrategy().ma_simple_strategy)
+    MA_SIMPLE = StrategyEntity('简单移动平均', SimpleStrategy().ma_simple_strategy)
 
-    strategy_dict = {'maSimple': MA_SIMPLE.strategy_func}
+    strategy_dict = {'maSimple': MA_SIMPLE}
 
