@@ -33,7 +33,7 @@ def test3():
 
 def test4():
     effect_backtest = EffectBacktest()
-    backtest_data = effect_backtest.simple_effect_backtest(Strategy.MA_SIMPLE.strategy_func)
+    backtest_data = effect_backtest.simple_effect_backtest(CodeCollection.US_TECHNOLOGY_CODE.get_data(), Strategy.MA_SIMPLE.strategy_func)
     print(backtest_data)
 
 

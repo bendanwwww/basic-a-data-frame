@@ -12,7 +12,7 @@ class ReadCodeCollection(object):
 class CodeCollection(object):
 
     """
-    趋势类型
+    数据候选集
     TECHNOLOGY_CODE: US 科技类股票代码 113
     """
     US_TECHNOLOGY_CODE = ReadCodeCollection("../frame/data/static_conf/technology_code.csv")

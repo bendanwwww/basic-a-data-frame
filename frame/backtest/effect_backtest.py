@@ -1,30 +1,29 @@
 import pandas as pd
 from futu import KLType
 
-from frame.constant.code_collection_constant import CodeCollection
 from frame.constant.trend_constant import Trend
 from frame.data.data_service.data_service import DataService
 from tools.time_tool import get_last_n_day
 
 
 class EffectBacktest(object):
-    # 测试股票集
-    technology_test_code = CodeCollection.US_TECHNOLOGY_CODE.get_data()
-    # technology_test_code = [{'code': 'US.CSCO'}]
 
     data_service = DataService()
 
     # 简单效果回测 回测 90 天样本
-    def simple_effect_backtest(self, strategy_func):
+    def simple_effect_backtest(self, test_codes, strategy_func, test_day=None):
+        # TODO 需要增加列
         res_table = pd.DataFrame(columns=['time_key', 'income', 'income_rate', 'winning_rate'])
-        for last_day_age in range(90, 1, -1):
+        if test_day is None:
+            test_day = 90
+        for last_day_age in range(test_day, 1, -1):
             time_key = get_last_n_day(last_day_age - 1)
             income = 0.0
             unit_income = 0.0
             winning = 0
             lose = 0
             all = 0
-            for data in self.technology_test_code:
+            for data in test_codes:
                 # 股票代码
                 code = data['code']
                 # 根据策略判断是否买入
