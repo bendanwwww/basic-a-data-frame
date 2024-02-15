@@ -32,7 +32,7 @@ class SimpleStrategy(object):
             last_thirty_ma_trend += last_thirty_ma_data[index] - last_thirty_ma_data[index - 1]
         # 计算 3 天 MA:1 曲线趋势
         last_three_ma_trend = 0
-        for index in range(len(last_three_ma_data) - 1, 3, -1):
+        for index in range(len(last_three_ma_data) - 1, 5, -1):
             last_three_ma_trend += last_three_ma_data[index] - last_three_ma_data[index - 1]
         if last_thirty_ma_trend > 0 and last_three_ma_trend < 0:
             return Trend.UP
