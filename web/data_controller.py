@@ -28,7 +28,7 @@ def get_strategy_list():
             'strategy_name': Strategy.strategy_dict[k].strategy_name,
         })
         index += 1
-    return json.dumps(res_list)
+    return {'strategy': res_list}
 
 # 量化策略回测
 @app.route('/commonTool/strategyBacktest')
