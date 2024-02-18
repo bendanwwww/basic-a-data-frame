@@ -13,6 +13,10 @@ class Strategy(object):
     策略类型
     """
     MA_SIMPLE = StrategyEntity('简单移动平均', SimpleStrategy().ma_simple_strategy)
+    WILLIAMS_R = StrategyEntity('威廉变异离散', SimpleStrategy().williams_r_strategy)
 
-    strategy_dict = {'maSimple': MA_SIMPLE}
+    strategy_dict = {
+        'maSimple': MA_SIMPLE,
+        'williamsR': WILLIAMS_R
+    }
 
