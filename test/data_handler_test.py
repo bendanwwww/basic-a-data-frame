@@ -27,19 +27,19 @@ def test2():
 
 def test3():
     simple_strategy = SimpleStrategy()
-    trend = simple_strategy.ma_simple_strategy("US.TAL")
+    trend = simple_strategy.williams_r_strategy("US.TAL")
     print('trend: ' + trend)
 
 
 def test4():
     effect_backtest = EffectBacktest()
-    backtest_data = effect_backtest.simple_effect_backtest(Strategy.MA_SIMPLE.strategy_func, CodeCollection.US_TECHNOLOGY_CODE, 180)
+    backtest_data = effect_backtest.simple_effect_backtest({Strategy.MA_SIMPLE: 0.5, Strategy.WILLIAMS_R: 0.5}, CodeCollection.US_TECHNOLOGY_CODE, 0.9, 100)
     print(backtest_data)
 
 
 def test5():
     data_choose = DataChoose()
-    choose_code_list = data_choose.choose_data(Strategy.MA_SIMPLE.strategy_func, CodeCollection.US_TECHNOLOGY_CODE)
+    choose_code_list = data_choose.choose_data(Strategy.MA_SIMPLE, CodeCollection.US_TECHNOLOGY_CODE)
     print(choose_code_list)
 
 

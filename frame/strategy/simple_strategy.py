@@ -10,7 +10,7 @@ class SimpleStrategy(object):
 
     # 简单移动平均
     # 若 最近 30 个交易日 MA:10 曲线趋势向上 且 最近 3 交易日 MA:1 曲线趋势向下, 则下一个交易日判断上涨
-    # 当 Σ(MAₙ - MA₍ₙ₋₁₎) > 0 趋势向上, Σ(MAₙ - MA₍ₙ₋₁₎) < 0 趋势向下, Σ(MAₙ - MA₍ₙ₋₁₎) = 0 趋势不变
+    # 当 Σ(MAₙ - MA₍ₙ₋₁₎) > 0 趋势向上, score = 1.0; Σ(MAₙ - MA₍ₙ₋₁₎) < 0 趋势向下, score = 0.0; Σ(MAₙ - MA₍ₙ₋₁₎) = 0 趋势不变, score = 0.5
     def ma_simple_strategy(self, code, start_day=None):
         if start_day is None:
             start_day = tools.time_tool.get_today()
@@ -19,7 +19,7 @@ class SimpleStrategy(object):
         # 获取前 120 天股票 天级别 k 线数据
         data = self.data_service.get_history_kline_with_cache(code, last_n_day, start_day, KLType.K_DAY)
         if data is None or len(data) == 0:
-            return Trend.UNKNOWN
+            return 0.0
         # 计算每日平均价
         data['avg'] = data[['open', 'close']].mean(axis=1)
         # 计算 MA:10 数据
@@ -35,8 +35,8 @@ class SimpleStrategy(object):
         for index in range(len(last_three_ma_data) - 1, 3, -1):
             last_three_ma_trend += last_three_ma_data[index] - last_three_ma_data[index - 1]
         if last_thirty_ma_trend > 0 and last_three_ma_trend < 0:
-            return Trend.UP
-        return Trend.UNKNOWN
+            return Trend.UP.trend_score
+        return Trend.UNKNOWN.trend_score
 
     # 威廉变异离散量
     # %R = (H_n - C) / (H_n - L_n) * -100
@@ -44,7 +44,7 @@ class SimpleStrategy(object):
     # H_n: 过去 n 个交易周期内的最高价
     # L_n: 过去 n 个交易周期内的最低价
     # n 取 28
-    # 当 %R < -95, 下一个交易日判断上涨
+    # score = |R| / 100
     def williams_r_strategy(self, code, start_day=None):
         if start_day is None:
             start_day = tools.time_tool.get_today()
@@ -53,11 +53,10 @@ class SimpleStrategy(object):
         # 获取前 30 天股票 天级别 k 线数据
         data = self.data_service.get_history_kline_with_cache(code, last_n_day, start_day, KLType.K_DAY)
         if data is None or len(data) == 0:
-            return Trend.UNKNOWN
+            return 0.0
 
-        # n & R 取值
+        # n 取值
         n = 28
-        r = -95
         # 当前收盘价
         c = data.iloc[-1]['close']
         # 最近 n 各交易日数据
@@ -67,8 +66,4 @@ class SimpleStrategy(object):
         # n 个交易周期内的最低价
         l_n = data['low'].min()
         # 计算
-        res = (h_n - c) / (h_n - l_n) * -100.0
-        if res < r:
-            return Trend.UP
-        else:
-            return Trend.UNKNOWN
+        return (h_n - c) / (h_n - l_n)

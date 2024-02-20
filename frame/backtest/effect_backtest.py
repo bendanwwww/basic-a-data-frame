@@ -1,7 +1,6 @@
 from futu import KLType
 
 from frame.backtest.backtest_common import get_test_result_table
-from frame.constant.trend_constant import Trend
 from frame.data.data_service.data_service import DataService
 from tools.time_tool import get_last_n_day
 
@@ -11,7 +10,10 @@ class EffectBacktest(object):
     data_service = DataService()
 
     # 简单效果回测 默认回测 90 天样本
-    def simple_effect_backtest(self, strategy_func, code_collection, test_day=None):
+    # strategy_func_dict 策略函数集合 key: 策略函数, value: 策略系数
+    # code_collection 回测股票集合
+    # buy_score 买入分数
+    def simple_effect_backtest(self, strategy_dict, code_collection, buy_score, test_day=None):
         res_table = get_test_result_table()
         test_codes = code_collection.get_data()
         if test_day is None:
@@ -30,10 +32,15 @@ class EffectBacktest(object):
             for data in test_codes:
                 # 股票代码
                 code = data['code']
-                # 根据策略判断是否买入
-                trend = strategy_func(code, get_last_n_day(last_day_age))
+                # 最终得分
+                final_score = 0.0
+                # 遍历策略 计算分数
+                for strategy in strategy_dict:
+                    strategy_func = strategy.strategy_func
+                    coefficient = strategy_dict[strategy]
+                    final_score += strategy_func(code, get_last_n_day(last_day_age)) * coefficient
                 # 可以买入
-                if trend == Trend.UP:
+                if final_score >= buy_score:
                     # 获取当天收盘价
                     data = self.data_service.get_history_kline_with_cache(code, time_key, time_key, KLType.K_DAY)
                     # 若当日未开盘, 直接跳过, 下一轮回测会命中
