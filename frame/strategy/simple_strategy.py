@@ -44,7 +44,7 @@ class SimpleStrategy(object):
     # H_n: 过去 n 个交易周期内的最高价
     # L_n: 过去 n 个交易周期内的最低价
     # n 取 28
-    # score = |R| / 100
+    # score = R
     def williams_r_strategy(self, code, start_day=None):
         if start_day is None:
             start_day = tools.time_tool.get_today()
@@ -66,4 +66,4 @@ class SimpleStrategy(object):
         # n 个交易周期内的最低价
         l_n = data['low'].min()
         # 计算
-        return (h_n - c) / (h_n - l_n)
+        return (h_n - c) / (h_n - l_n) * -100

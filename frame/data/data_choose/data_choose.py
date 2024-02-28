@@ -17,19 +17,20 @@ class DataChoose(object):
                 res_list.append(code)
         return res_list
 
-    def choose_data_with_strategys(self, strategy_dict, code_collection, buy_score):
+    # strategy_dict key: namespace value: strategy
+    def choose_data_with_strategys(self, strategy_dict, strategies_eval, code_collection, buy_score):
         res_list = []
         choose_code_collection = code_collection.get_data()
         for data in choose_code_collection:
             # 股票代码
             code = data['code']
-            # 最终得分
-            final_score = 0.0
             # 遍历策略 计算分数
-            for strategy in strategy_dict:
-                strategy_func = strategy.strategy_func
-                coefficient = strategy_dict[strategy]
-                final_score += strategy_func(code) * coefficient
+            namespace_dict = {}
+            for strategy_var in strategy_dict:
+                strategy_func = strategy_dict[strategy_var].strategy_func
+                namespace_dict[strategy_var] = strategy_func(code)
+            # 最终得分
+            final_score = eval(strategies_eval, namespace_dict)
             # 可以买入
             if final_score >= buy_score:
                 res_list.append(code)

@@ -31,7 +31,7 @@ def get_strategy_list():
     return {'strategy': res_list}
 
 # 量化策略回测
-# strategies: [[strategy_str, score], [], ...]
+# strategies: [[strategy_var, strategy_str], [], ...]
 @app.route('/commonTool/strategyBacktest', methods=['POST'])
 def strategy_backtest():
     params = json.loads(request.get_data())
@@ -40,20 +40,22 @@ def strategy_backtest():
     if "backtest" in params:
         backtest = params["backtest"]
     if "backtestDay" in params:
-        backtest = int(params["backtestDay"])
+        backtest_day = int(params["backtestDay"])
     strategies = params["strategyInfos"]
     code_collection = params["codeCollection"]
     buy_score = params["buyScore"]
+    strategies_eval = params["strategiesEval"]
     if code_collection not in CodeCollection.code_collection_dict:
         return json.dumps([])
     strategy_dict = {}
     for strategy_list in strategies:
-        strategy_str = strategy_list[0]
+        strategy_var = strategy_list[0]
+        strategy_str = strategy_list[1]
         if strategy_str not in Strategy.strategy_dict:
             return json.dumps([])
         strategy = Strategy.strategy_dict[strategy_str]
-        strategy_dict[strategy] = strategy_list[1]
-    res_table = Backtest.backtest_dict[backtest].backtest_func(strategy_dict, CodeCollection.code_collection_dict[code_collection], buy_score, backtest_day)
+        strategy_dict[strategy_var] = strategy
+    res_table = Backtest.backtest_dict[backtest].backtest_func(strategy_dict, strategies_eval, CodeCollection.code_collection_dict[code_collection], buy_score, backtest_day)
     return json.dumps(res_table.to_dict(orient='list'))
 
 # 选择股票 单策略
@@ -70,23 +72,25 @@ def choose_data():
     return json.dumps(res_list)
 
 # 选择股票 多策略组合
-# strategies: [[strategy_str, score], [], ...]
+# strategies: [[strategy_var, strategy_str], [], ...]
 @app.route('/commonTool/chooseDataWithStrategys', methods=['POST'])
 def choose_data_with_strategys():
     params = json.loads(request.get_data())
     strategies = params["strategyInfos"]
     buy_score = params["buyScore"]
     code_collection = params["codeCollection"]
+    strategies_eval = params["strategiesEval"]
     if code_collection not in CodeCollection.code_collection_dict:
         return json.dumps([])
     strategy_dict = {}
     for strategy_list in strategies:
-        strategy_str = strategy_list[0]
+        strategy_var = strategy_list[0]
+        strategy_str = strategy_list[1]
         if strategy_str not in Strategy.strategy_dict:
             return json.dumps([])
         strategy = Strategy.strategy_dict[strategy_str]
-        strategy_dict[strategy] = strategy_list[1]
-    res_list = data_choose_service.choose_data_with_strategys(strategy_dict, CodeCollection.code_collection_dict[code_collection], buy_score)
+        strategy_dict[strategy_var] = strategy
+    res_list = data_choose_service.choose_data_with_strategys(strategy_dict, strategies_eval, CodeCollection.code_collection_dict[code_collection], buy_score)
     return json.dumps(res_list)
 
 

@@ -10,10 +10,10 @@ class EffectBacktest(object):
     data_service = DataService()
 
     # 简单效果回测 默认回测 90 天样本
-    # strategy_func_dict 策略函数集合 key: 策略函数, value: 策略系数
+    # strategy_dict 策略函数集合 key: namespace value: strategy
     # code_collection 回测股票集合
     # buy_score 买入分数
-    def simple_effect_backtest(self, strategy_dict, code_collection, buy_score, test_day=None):
+    def simple_effect_backtest(self, strategy_dict, strategies_eval, code_collection, buy_score, test_day=None):
         res_table = get_test_result_table()
         test_codes = code_collection.get_data()
         if test_day is None:
@@ -32,19 +32,19 @@ class EffectBacktest(object):
             for data in test_codes:
                 # 股票代码
                 code = data['code']
-                # 最终得分
-                final_score = 0.0
                 # 遍历策略 计算分数
-                for strategy in strategy_dict:
-                    strategy_func = strategy.strategy_func
-                    coefficient = strategy_dict[strategy]
-                    final_score += strategy_func(code, get_last_n_day(last_day_age)) * coefficient
+                namespace_dict = {}
+                for strategy_var in strategy_dict:
+                    strategy_func = strategy_dict[strategy_var].strategy_func
+                    namespace_dict[strategy_var] = strategy_func(code)
+                # 最终得分
+                final_score = eval(strategies_eval, namespace_dict)
                 # 可以买入
                 if final_score >= buy_score:
                     # 获取当天收盘价
                     data = self.data_service.get_history_kline_with_cache(code, time_key, time_key, KLType.K_DAY)
                     # 若当日未开盘, 直接跳过, 下一轮回测会命中
-                    if len(data) == 0:
+                    if data is None or len(data) == 0:
                         continue
                     code_open_price = data.iloc[-1]['open']
                     code_close_price = data.iloc[-1]['close']
